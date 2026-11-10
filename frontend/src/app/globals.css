@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-charcoal: #121212;
+  --gold-accent: #C5A059;
+  --text-cream: #F5F5F0;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #121212;
+  color: #F5F5F0;
+}
+
+body {
+  background-color: #121212;
+  color: #F5F5F0;
+  overflow-x: hidden;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Custom Scrollbar for speakeasy dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0b0b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2824;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C5A059;
+}
+
+/* Subtle gold foil text effect */
+.gold-text-gradient {
+  background: linear-gradient(135deg, #F4ECD8 0%, #C5A059 45%, #E8D7B0 70%, #9E7F40 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Border gold shimmer */
+.gold-border-gradient {
+  border-image: linear-gradient(to right, rgba(197, 160, 89, 0.1), rgba(197, 160, 89, 0.6), rgba(197, 160, 89, 0.1)) 1;
+}
+
+/* Speakeasy subtle ambient background grain */
+.bg-ambient-grain {
+  background-image: radial-gradient(rgba(197, 160, 89, 0.03) 1px, transparent 0);
+  background-size: 24px 24px;
+}

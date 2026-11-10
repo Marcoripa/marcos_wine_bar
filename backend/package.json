@@ -1,0 +1,21 @@
+{
+  "name": "marcos-wine-bar-backend",
+  "version": "1.0.0",
+  "description": "Firebase Cloud Functions for Marco's Wine Bar lead processing",
+  "main": "index.js",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions"
+  },
+  "engines": {
+    "node": "22"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.0.0",
+    "firebase-functions": "^5.0.0",
+    "nodemailer": "^6.9.13"
+  },
+  "private": true
+}
