@@ -198,7 +198,7 @@ export default function LeadForm({ onSuccess, initialService = 'Floor Takeovers 
               Masterclass / Tasting Dinner
             </option>
             <option value="Beverage Margin & Inventory Engineering">
-              Cellar Stategist
+              Cellar Strategist
             </option>
             <option value="Custom Partnership">
               Custom Partnership / Private Event

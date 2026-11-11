@@ -395,7 +395,7 @@ export default function PrivateTastingsPage() {
             onClick={() => setIsInfoPanelOpen(true)}
             className="text-xs tracking-wider text-[#282828] hover:text-[#8e6f33] transition-colors py-1 px-3 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059]"
           >
-            <span className="font-semibold text-[#8e6f33]">$500 + wine</span>
+            <span className="font-semibold text-[#8e6f33]">$800 + wine</span>
             <span className="mx-2 text-[#78716c]">·</span>
             <span className="underline underline-offset-4 decoration-[#c5a059]">FAQs</span>
           </button>
@@ -458,7 +458,7 @@ export default function PrivateTastingsPage() {
                   {/* Price Callout Box */}
                   <div className="p-5 sm:p-6 bg-[#fbf8f1] border border-[#c5a059]/50 shadow-sm rounded-sm max-w-xl mx-auto text-left sm:text-center">
                     <p className="text-sm sm:text-base text-[#282828] font-light leading-relaxed">
-                      <strong className="text-[#8e6f33] font-semibold">$500 + wine</strong> <br></br>I&apos;ll design the tasting and write the wine list. You buy the wine directly. Wine usually runs $300 to $1,000.
+                      <strong className="text-[#8e6f33] font-semibold">$800 + wine</strong> <br></br>I&apos;ll design the tasting and write the wine list. You buy the wine directly. Wine usually runs $300 to $1,000.
                     </p>
                   </div>
 
@@ -478,11 +478,27 @@ export default function PrivateTastingsPage() {
                 <div className="p-6 sm:p-8 bg-[#fbf8f1] border border-[#ded7c8] shadow-sm rounded-sm">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
                     <div className="w-24 h-32 sm:w-28 sm:h-36 shrink-0 rounded-sm overflow-hidden border border-[#c5a059]/40 bg-[#f4ecd8]">
-                      <img
-                        src="/web-20261026-Ripa-001.jpg"
-                        alt="Marco Ripa, Visiting Sommelier"
-                        className="w-full h-full object-cover object-top"
-                      />
+                      <picture>
+                        <source
+                          type="image/webp"
+                          srcSet="/web-20261026-Ripa-001-160w.webp 160w, /web-20261026-Ripa-001-360w.webp 360w"
+                          sizes="(max-width: 640px) 96px, 112px"
+                        />
+                        <source
+                          type="image/jpeg"
+                          srcSet="/web-20261026-Ripa-001-160w.jpg 160w, /web-20261026-Ripa-001-360w.jpg 360w"
+                          sizes="(max-width: 640px) 96px, 112px"
+                        />
+                        <img
+                          src="/web-20261026-Ripa-001-360w.jpg"
+                          alt="Marco Ripa, Visiting Sommelier"
+                          width={112}
+                          height={144}
+                          loading="lazy"
+                          decoding="async"
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </picture>
                     </div>
                     <div className="space-y-2 text-center sm:text-left">
                       <div className="text-xs uppercase tracking-[0.25em] text-[#333333] font-semibold">
@@ -1104,13 +1120,13 @@ export default function PrivateTastingsPage() {
           onClick={() => setIsInfoPanelOpen(true)}
           className="w-full py-3 px-4 bg-[#fbf8f1]/95 backdrop-blur-md border border-[#c5a059] rounded-full shadow-2xl text-xs text-[#121212] flex items-center justify-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059]"
         >
-          <span className="font-semibold text-[#8e6f33]">$500 + wine</span>
+          <span className="font-semibold text-[#8e6f33]">$800 + wine</span>
           <span className="text-[#78716c]">·</span>
           <span className="font-medium text-[#121212]">FAQs</span>
         </button>
       </div>
 
-      {/* Info Panel Modal ("$500 + wine · How it works · FAQs") */}
+      {/* Info Panel Modal ("$800 + wine · How it works · FAQs") */}
       {isInfoPanelOpen && (
         <div
           className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6"
@@ -1143,7 +1159,7 @@ export default function PrivateTastingsPage() {
             {/* Pricing Section */}
             <div className="p-5 bg-[#fbf8f1] border border-[#c5a059]/40 rounded-sm shadow-sm">
               <p className="text-sm sm:text-base text-[#282828] font-light leading-relaxed">
-                <strong className="text-[#8e6f33] font-semibold">$500 + wine</strong> <br></br>
+                <strong className="text-[#8e6f33] font-semibold">$800 + wine</strong> <br></br>
                 I&apos;ll design the tasting and write the wine list. The wine runs from about $300 for an entry-level tasting to about $1,000 for an exclusive one. <br></br>
                 It&apos;s designed to serve up to 12 people. More guests? We scale the wine, and my fee stays the same.
               </p>

@@ -16,6 +16,26 @@ import { Wine, Calendar } from 'lucide-react';
 export default function Home() {
   const [isConsultationModalOpen, setIsConsultationModalOpen] = useState(false);
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: "Marco's Wine Bar",
+    url: 'https://marcoswinebar.com.au/',
+    image: 'https://marcoswinebar.com.au/og-image.jpg',
+    description:
+      'Visiting Sommelier: customised private wine tastings, wine classes and venue partnerships across Victoria.',
+    areaServed: 'Mornington Peninsula, Melbourne, Victoria (Australia)',
+    founder: {
+      '@type': 'Person',
+      name: 'Marco Ripa',
+      jobTitle: 'Wine Strategist & Sommelier',
+    },
+    sameAs: [
+      'https://www.instagram.com/marcos.mornington/',
+      'https://www.facebook.com/1449287474935370',
+    ],
+  };
+
   const scrollToSection = (sectionId) => {
     const el = document.getElementById(sectionId);
     if (el) {
@@ -25,6 +45,12 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-charcoal-900 text-cream-100 font-sans selection:bg-gold-500 selection:text-charcoal-950">
+      {/* Schema.org Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Navigation */}
       <Navbar
         onOpenConsultation={() => setIsConsultationModalOpen(true)}

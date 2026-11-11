@@ -37,11 +37,28 @@ export default function Pedigree() {
               <div className="relative w-full max-w-sm group">
                 <div className="absolute -inset-1 bg-gradient-to-tr from-gold-600/20 via-gold-500/40 to-copper-500/20 rounded-sm blur-sm opacity-70 group-hover:opacity-100 transition duration-500" />
                 <div className="relative overflow-hidden rounded-sm border border-gold-500/40 bg-charcoal-950 aspect-[3/4]">
-                  <img
-                    src="/web-20261026-Ripa-001.jpg"
-                    alt="Marco - Wine Strategist & Sommelier"
-                    className="w-full h-full object-cover object-top filter contrast-[1.04] brightness-95 group-hover:scale-102 transition duration-500"
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/web-20261026-Ripa-001-360w.webp 360w, /web-20261026-Ripa-001-720w.webp 720w, /web-20261026-Ripa-001-1080w.webp 1080w"
+                      sizes="(max-width: 640px) 320px, (max-width: 1024px) 384px, 384px"
+                    />
+                    <source
+                      type="image/jpeg"
+                      srcSet="/web-20261026-Ripa-001-360w.jpg 360w, /web-20261026-Ripa-001-720w.jpg 720w, /web-20261026-Ripa-001.jpg 1080w"
+                      sizes="(max-width: 640px) 320px, (max-width: 1024px) 384px, 384px"
+                    />
+                    <img
+                      src="/web-20261026-Ripa-001-720w.jpg"
+                      alt="Marco - Wine Strategist & Sommelier"
+                      width={384}
+                      height={512}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      className="w-full h-full object-cover object-top filter contrast-[1.04] brightness-95 group-hover:scale-102 transition duration-500"
+                    />
+                  </picture>
                 </div>
               </div>
               <div className="mt-4 text-center">

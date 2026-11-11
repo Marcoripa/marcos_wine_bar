@@ -18,9 +18,10 @@ const sans = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://marcoswinebar.com.au'),
   title: "Marco | Wine Strategist & Visiting Sommelier",
   description:
-    "Serious wine, minus the ego. Visiting Sommelier services for Victorian venues and private events).",
+    "Serious wine, minus the ego. Visiting Sommelier services for Victorian venues and private events.",
   keywords: [
     'Wine Strategist Victoria',
     'Visiting Sommelier Regional Victoria',
@@ -30,11 +31,33 @@ export const metadata = {
     'Private Sommelier',
     'Wine List Consultant Victoria',
   ],
+  alternates: {
+    canonical: 'https://marcoswinebar.com.au/',
+  },
   openGraph: {
     title: "Marco | Wine Strategist & Sommelier",
     description:
       "Serious wine, minus the ego. Transforming quiet regional Victorian dining rooms into high-margin destination nights.",
+    url: 'https://marcoswinebar.com.au/',
+    siteName: "Marco's Wine Bar",
+    locale: 'en_AU',
     type: 'website',
+    images: [
+      {
+        url: 'https://marcoswinebar.com.au/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Marco Ripa, Visiting Sommelier',
+        type: 'image/jpeg',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "Marco | Wine Strategist & Sommelier",
+    description:
+      "Serious wine, minus the ego. Transforming quiet regional Victorian dining rooms into high-margin destination nights.",
+    images: ['https://marcoswinebar.com.au/og-image.jpg'],
   },
   verification: {
     other: {
