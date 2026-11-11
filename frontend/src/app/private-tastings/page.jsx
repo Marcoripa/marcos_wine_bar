@@ -446,7 +446,7 @@ export default function PrivateTastingsPage() {
           <AnimatePresence mode="wait">
             {/* SCREEN 0: WELCOME */}
             {step === 0 && (
-              <motion.div key="step-0" {...motionProps} className="space-y-10">
+              <div key="step-0" className="space-y-10">
                 <div className="text-center space-y-5 pt-2 sm:pt-6">
                   <h1 className="text-4xl sm:text-6xl font-serif font-light text-[#121212] tracking-tight leading-[1.1]">
                     Serious wine. <span className="italic font-normal text-[#8e6f33]">Minus the ego.</span>
@@ -510,7 +510,7 @@ export default function PrivateTastingsPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {/* SCREEN 1: WHAT'S THE OCCASION? */}

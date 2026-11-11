@@ -21,26 +21,17 @@ export default function Hero({ onOpenConsultation, onScrollToSection }) {
 
       <div className="max-w-6xl mx-auto px-6 relative z-10 w-full text-center">
         {/* Dynamic Main Title */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
-        >
+        <div>
           <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-light text-cream-50 tracking-tight leading-[1.08] mb-8">
             Serious wine. <br className="hidden sm:block" />
             <span className="italic font-normal gold-text-gradient">Minus the ego.</span>
           </h1>
-        </motion.div>
+        </div>
 
         {/* Lead statement */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: 'easeOut' }}
-          className="text-base sm:text-lg md:text-xl text-cream-400 font-light max-w-2xl mx-auto mb-12 leading-relaxed"
-        >
+        <p className="text-base sm:text-lg md:text-xl text-cream-400 font-light max-w-2xl mx-auto mb-12 leading-relaxed">
           Bringing destination wine culture to your dining rooms. We strip away the elitism and keep the wonder, turning every glass into an invitation to travel, discover, learn and, most importantly, enjoy.
-        </motion.p>
+        </p>
 
         {/* Three-Pillar Interactive Feature Cards */}
         <motion.div
