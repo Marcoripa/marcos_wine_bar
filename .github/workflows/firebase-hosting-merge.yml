@@ -1,5 +1,6 @@
 # Publishes the website to the live site (marcoswinebar.com.au) every time something is merged into main.
 # Only the website pages are published. Enquiry functions (backend) and database rules are NOT touched.
+# Keyless: GitHub proves who it is to Google (Workload Identity Federation). No key is stored anywhere.
 name: Publish website (live)
 
 on:
@@ -10,11 +11,17 @@ concurrency:
   group: publish-live
   cancel-in-progress: false
 
+env:
+  PROJECT_ID: marcos-wine-bar-vic
+  WIF_PROVIDER: projects/673563830266/locations/global/workloadIdentityPools/github/providers/marcos-wine-bar
+  SERVICE_ACCOUNT: github-publisher@marcos-wine-bar-vic.iam.gserviceaccount.com
+
 jobs:
   build_and_publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -29,18 +36,12 @@ jobs:
 
       - name: Build
         run: npm run build --prefix frontend
-        env:
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ vars.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ vars.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET: ${{ vars.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET }}
-          NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID }}
-          NEXT_PUBLIC_FIREBASE_APP_ID: ${{ vars.NEXT_PUBLIC_FIREBASE_APP_ID }}
+
+      - name: Sign in to Google (keyless)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
 
       - name: Publish to Firebase Hosting (live)
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: marcos-wine-bar-vic
-          channelId: live
+        run: npx --yes firebase-tools@14 deploy --only hosting --project "$PROJECT_ID" --non-interactive
