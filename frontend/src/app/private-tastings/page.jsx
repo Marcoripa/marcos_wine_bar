@@ -24,6 +24,24 @@ const Cal = dynamic(() => import('@calcom/embed-react'), {
 
 const CAL_LINK = process.env.NEXT_PUBLIC_CAL_LINK || 'https://cal.com/marcoswinebar/private-tasting';
 
+// Promo codes. To switch a code off when its spots are gone, set active: false (or delete it).
+// The code can be typed on the last step, or applied by link: /private-tastings/?code=SUMMER
+const STANDARD_FEE = '$800';
+const PROMO_CODES = {
+  SUMMER: {
+    active: true,
+    fee: '$500',
+    message: 'Summer hens price: $500 + wine instead of $800 (first ten summer hens, held 1 Dec to 28 Feb).',
+    summary: 'Code SUMMER ($500 + wine)',
+  },
+};
+
+function findPromo(raw) {
+  const code = String(raw || '').trim().toUpperCase();
+  const promo = PROMO_CODES[code];
+  return promo && promo.active ? { code, ...promo } : null;
+}
+
 const OCCASION_OPTIONS = [
   "Friends' weekend",
   'Birthday',
@@ -108,6 +126,12 @@ export default function PrivateTastingsPage() {
   const [notes, setNotes] = useState('');
   const [honeypot, setHoneypot] = useState('');
 
+  // Promo code state
+  const [promo, setPromo] = useState(null);
+  const [promoInput, setPromoInput] = useState('');
+  const [isPromoBoxOpen, setIsPromoBoxOpen] = useState(false);
+  const [promoError, setPromoError] = useState('');
+
   // Submission state
   const [submitting, setSubmitting] = useState(false);
   const [optionSelected, setOptionSelected] = useState('');
@@ -129,6 +153,11 @@ export default function PrivateTastingsPage() {
       }
     }
     setUtmParams(capturedUtm);
+
+    const linkPromo = findPromo(params.get('code'));
+    if (linkPromo) {
+      setPromo(linkPromo);
+    }
 
     const initialStep = parseStepFromHash(window.location.hash);
     if (initialStep >= 1 && initialStep <= 6) {
@@ -245,6 +274,7 @@ export default function PrivateTastingsPage() {
       journey ? `Journey: ${journey}` : '',
       wineBudget ? `Budget: ${wineBudget}` : '',
       location ? `Location: ${location.trim()}` : '',
+      promo ? promo.summary : '',
       notes ? `Notes: ${notes.trim()}` : '',
     ].filter(Boolean);
 
@@ -256,7 +286,7 @@ export default function PrivateTastingsPage() {
       notes: summaryParts.join(' | '),
       theme: 'light',
     };
-  }, [name, email, phone, location, notes, occasion, occasionOther, groupSize, journey, wineBudget]);
+  }, [name, email, phone, location, notes, occasion, occasionOther, groupSize, journey, wineBudget, promo]);
 
   const buildCalUrl = () => {
     const calParams = new URLSearchParams();
@@ -270,6 +300,7 @@ export default function PrivateTastingsPage() {
       groupSize ? `Guests: ${groupSize}` : '',
       journey ? `Journey: ${journey}` : '',
       wineBudget ? `Budget: ${wineBudget}` : '',
+      promo ? promo.summary : '',
       notes ? `Notes: ${notes.trim()}` : '',
     ].filter(Boolean);
 
@@ -278,6 +309,27 @@ export default function PrivateTastingsPage() {
     }
 
     return `${CAL_LINK}?${calParams.toString()}`;
+  };
+
+  // Adds the promo code to the booking line, so it shows in Marco's enquiry alert email.
+  const withPromo = (label) => (promo ? `${label} · ${promo.summary}` : label);
+
+  const handleApplyPromo = (e) => {
+    e.preventDefault();
+    const found = findPromo(promoInput);
+    if (found) {
+      setPromo(found);
+      setPromoError('');
+      setIsPromoBoxOpen(false);
+    } else {
+      setPromoError("That code isn't valid. Check the spelling, or send an enquiry and ask me.");
+    }
+  };
+
+  const handleRemovePromo = () => {
+    setPromo(null);
+    setPromoInput('');
+    setPromoError('');
   };
 
   // Option A: Book my date via Cal.com + $200 deposit
@@ -298,7 +350,8 @@ export default function PrivateTastingsPage() {
         email,
         phone,
         notes,
-        bookingPreference: 'Book my date (Cal.com $200 deposit)',
+        bookingPreference: withPromo('Book my date (Cal.com $200 deposit)'),
+        promoCode: promo ? promo.code : '',
         utm: utmParams,
       });
 
@@ -337,7 +390,8 @@ export default function PrivateTastingsPage() {
         email,
         phone,
         notes,
-        bookingPreference: 'Send an enquiry (no payment)',
+        bookingPreference: withPromo('Send an enquiry (no payment)'),
+        promoCode: promo ? promo.code : '',
         utm: utmParams,
       });
 
@@ -659,7 +713,9 @@ export default function PrivateTastingsPage() {
                     Your wine budget
                   </h1>
                   <p className="text-sm sm:text-base text-[#4a4a4a] font-light">
-                    The fee is $500. The wine is extra, and you buy it directly.
+                    {promo
+                      ? `The fee is ${promo.fee} with your ${promo.code} code. The wine is extra, and you buy it directly.`
+                      : `The fee is ${STANDARD_FEE}. The wine is extra, and you buy it directly.`}
                   </p>
                 </div>
 
@@ -939,6 +995,63 @@ export default function PrivateTastingsPage() {
                     How would you like to proceed?
                   </h1>
                 </div>
+
+                {/* PROMO CODE */}
+                {promo ? (
+                  <div
+                    role="status"
+                    className="p-4 bg-[#fbf8f1] border border-[#c5a059] text-[#121212] text-xs sm:text-sm flex items-start gap-3 rounded-sm"
+                  >
+                    <Check className="w-5 h-5 text-[#8e6f33] shrink-0 mt-0.5" />
+                    <span className="flex-grow">{promo.message}</span>
+                    <button
+                      type="button"
+                      onClick={handleRemovePromo}
+                      className="text-xs text-[#4a4a4a] underline underline-offset-2 hover:text-[#121212] shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059]"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : isPromoBoxOpen ? (
+                  <form onSubmit={handleApplyPromo} className="space-y-2">
+                    <label htmlFor="promo-code" className="block text-xs uppercase tracking-widest text-[#4a4a4a]">
+                      Your code
+                    </label>
+                    <div className="flex gap-2">
+                      <input
+                        id="promo-code"
+                        type="text"
+                        autoComplete="off"
+                        autoCapitalize="characters"
+                        value={promoInput}
+                        onChange={(e) => {
+                          setPromoInput(e.target.value);
+                          setPromoError('');
+                        }}
+                        className="flex-grow min-w-0 px-4 py-3 bg-white border border-[#ded7c8] focus:border-[#c5a059] focus:outline-none text-[#121212] text-sm rounded-sm uppercase"
+                      />
+                      <button
+                        type="submit"
+                        className="px-5 py-3 bg-[#121212] hover:bg-[#333333] text-[#fbf8f1] text-xs uppercase tracking-widest font-semibold rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059]"
+                      >
+                        Apply
+                      </button>
+                    </div>
+                    {promoError && (
+                      <p role="alert" className="text-xs text-red-800">
+                        {promoError}
+                      </p>
+                    )}
+                  </form>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setIsPromoBoxOpen(true)}
+                    className="text-xs text-[#8e6f33] underline underline-offset-2 hover:text-[#5c461d] font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#c5a059]"
+                  >
+                    Have a code?
+                  </button>
+                )}
 
                 {submitError && (
                   <div
