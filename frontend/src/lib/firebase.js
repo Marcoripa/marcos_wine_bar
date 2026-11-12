@@ -151,6 +151,7 @@ export async function submitPrivateEventEnquiry(payload) {
     phone: payload.phone ? payload.phone.trim() : '',
     notes: payload.notes ? payload.notes.trim() : '',
     bookingPreference: payload.bookingPreference ? payload.bookingPreference.trim() : '',
+    promoCode: payload.promoCode ? String(payload.promoCode).trim().toUpperCase() : '',
     utm: payload.utm || {},
     source: 'private-tastings-wizard',
     status: 'new',
