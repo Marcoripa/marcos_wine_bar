@@ -1,0 +1,63 @@
+# Makes a temporary preview link for every proposed change (pull request into main).
+# The link is posted as a comment on the pull request and expires after 14 days. The live site is NOT touched.
+# Keyless: GitHub proves who it is to Google (Workload Identity Federation). No key is stored anywhere.
+name: Preview website change
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  PROJECT_ID: marcos-wine-bar-vic
+  WIF_PROVIDER: projects/673563830266/locations/global/workloadIdentityPools/github/providers/marcos-wine-bar
+  SERVICE_ACCOUNT: github-publisher@marcos-wine-bar-vic.iam.gserviceaccount.com
+
+jobs:
+  build_and_preview:
+    # Only for changes from this repository (never from strangers' copies of the public repo).
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        run: npm ci --prefix frontend
+
+      - name: Build
+        run: npm run build --prefix frontend
+
+      - name: Sign in to Google (keyless)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+
+      - name: Publish to a temporary preview link
+        id: preview
+        run: |
+          npx --yes firebase-tools@14 hosting:channel:deploy "pr-${{ github.event.number }}" \
+            --expires 14d --project "$PROJECT_ID" --non-interactive --json > preview.json
+          url=$(jq -r '.result | to_entries[0].value.url' preview.json)
+          if [ -z "$url" ] || [ "$url" = "null" ]; then cat preview.json; exit 1; fi
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+
+      - name: Post the preview link on the pull request
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `Preview of this change (live site not touched, link expires in 14 days):\n${{ steps.preview.outputs.url }}\n\nCommit: ${context.sha.slice(0, 7)}`
+            });

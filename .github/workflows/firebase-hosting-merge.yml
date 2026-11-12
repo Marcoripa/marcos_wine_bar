@@ -1,0 +1,47 @@
+# Publishes the website to the live site (marcoswinebar.com.au) every time something is merged into main.
+# Only the website pages are published. Enquiry functions (backend) and database rules are NOT touched.
+# Keyless: GitHub proves who it is to Google (Workload Identity Federation). No key is stored anywhere.
+name: Publish website (live)
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: publish-live
+  cancel-in-progress: false
+
+env:
+  PROJECT_ID: marcos-wine-bar-vic
+  WIF_PROVIDER: projects/673563830266/locations/global/workloadIdentityPools/github/providers/marcos-wine-bar
+  SERVICE_ACCOUNT: github-publisher@marcos-wine-bar-vic.iam.gserviceaccount.com
+
+jobs:
+  build_and_publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install
+        run: npm ci --prefix frontend
+
+      - name: Build
+        run: npm run build --prefix frontend
+
+      - name: Sign in to Google (keyless)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ env.WIF_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
+
+      - name: Publish to Firebase Hosting (live)
+        run: npx --yes firebase-tools@14 deploy --only hosting --project "$PROJECT_ID" --non-interactive
